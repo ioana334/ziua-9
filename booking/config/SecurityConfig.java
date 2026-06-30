@@ -6,6 +6,7 @@ import com.company.booking.dto.response.AuthResponse;
 import com.company.booking.service.AuthService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+@EnableMethodSecurity
 
 @RestController
 @RequestMapping("/api/auth")
@@ -26,4 +27,10 @@ public class AuthController {
     public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest request) {
         return ResponseEntity.ok(authService.login(request));
     }
+    .authorizeHttpRequests()
+    .requestMatchers("/api/auth/**").permitAll()
+    .requestMatchers("/api/trips/**").hasAnyRole("ADMIN", "USER")
+    .requestMatchers("/api/admin/**").hasRole("ADMIN")
+    .anyRequest().authenticated()
+   
 }
